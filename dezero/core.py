@@ -146,6 +146,10 @@ class Variable:
                 for y in f.outputs:
                     y().grad = None  # y is weakref
 
+# Parameter Class : 모델의 가중치들을 한번에 처리할 수 있도록 도와주는 class (업데이트 및 cleargrad)
+class Parameter(Variable):
+    pass
+
 def as_variable(obj):
     if isinstance(obj, Variable):
         return obj
@@ -159,6 +163,7 @@ def as_array(x):
 class Function:
     def __call__(self, *inputs):
         inputs = [as_variable(x) for x in inputs]
+
 
         xs = [x.data for x in inputs]
         ys = self.forward(*xs)
@@ -313,3 +318,11 @@ def setup_variable():
     Variable.__truediv__ = div
     Variable.__rtruediv__ = rdiv
     Variable.__pow__ = pow
+
+if __name__ == "__main__":
+    x = Variable(np.array(1.0))
+    p = Parameter(np.array(2.0))
+
+    y = x * p
+
+    breakpoint()
