@@ -15,7 +15,7 @@ class Layer: # Layer Class => 원하는 연산 지원 및 + Parameter 클래스�
         self._params = set()
 
     def __setattr__(self, name, value):
-        if isinstance(value, Parameter):
+        if isinstance(value, (Parameter, Layer)):
             self._params.add(name)
         super().__setattr__(name, value)
     
@@ -33,10 +33,16 @@ class Layer: # Layer Class => 원하는 연산 지원 및 + Parameter 클래스�
     # Layer에서 관리하는 실제 parameter 값을 차례로 반환하는 generator 함수, yield를 사용하여서 반환 후 함추를 종료하는 것이 아닌 함수 일시중지후 다음 yield를 기다림
     def params(self):
         for name in self._params:
-            yield self.__dict__[name]
+            obj = self.__dict__[name]
+
+            # Layer안에 또다른 Layer가 있을 떄 그 Layer안에 있는 params generator 호출(여러 layer가 관리하는 파라미터를 하나의 layer로 관리하기 위해 일종의 container 같은 것을 만들어놓음)
+            if isinstance(obj, Layer):
+                yield from obj.params() # yield from : Generator in Generator 호출 시에(다른 곳에서 generator를 호출할 시에 사용)
+            else:
+                yield obj
 
     def cleargrads(self):
-        for param in self.params(): # generator 함수를 반복 호출하여 yield값을 param이 참조할 수 있게함.
+        for param in self.params(): # generator 함수를 반복 호출하여 yield 값을 param이 참조할 수 있게함.
             param.cleargrad()
 
 # Layer 클래스를 상속 받아서 원하는 선형 변환을 할 수 있도록(Layer를 상속받음으로써 파라미터 관리도 할 수 있음)

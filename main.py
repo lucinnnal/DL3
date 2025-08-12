@@ -18,6 +18,4 @@ from dezero import Variable이 가능한 이유!!! : 패키지가 import 될 때
 
 if __name__ == "__main__":
     x = Variable(np.array([[1,2,3], [4,5,6]]))
-    y = F.sin(x)
-    print(y)
-    
+    print(x[0])

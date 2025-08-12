@@ -307,6 +307,7 @@ class Pow(Function):
 def pow(x, c):
     return Pow(c)(x)
 
+# 연산자 오버로딩
 def setup_variable():
     Variable.__add__ = add
     Variable.__radd__ = add
@@ -318,11 +319,7 @@ def setup_variable():
     Variable.__truediv__ = div
     Variable.__rtruediv__ = rdiv
     Variable.__pow__ = pow
+    Variable.__getitem__ = dezero.functions.get_item
 
 if __name__ == "__main__":
-    x = Variable(np.array(1.0))
-    p = Parameter(np.array(2.0))
-
-    y = x * p
-
-    breakpoint()
+    pass
